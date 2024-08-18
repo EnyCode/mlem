@@ -8,12 +8,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import dev.enymc.mlem.message.BroadcastC2S;
+import dev.enymc.mlem.packet.BroadcastC2S;
 
-public interface MessageC2S {
+public interface C2SPacket {
     public static final Gson GSON = new Gson();
 
-    public static Optional<MessageC2S> execute(MlemServer server, String json, WebSocket conn) {
+    public static Optional<C2SPacket> execute(MlemServer server, String json, WebSocket conn) {
         JsonObject obj;
         try {
             obj = GSON.fromJson(json, JsonObject.class);
@@ -28,7 +28,7 @@ public interface MessageC2S {
             return Optional.empty();
         }
 
-        MessageC2S msg = type.equals("broadcast") ? new BroadcastC2S() : null;
+        C2SPacket msg = type.equals("broadcast") ? new BroadcastC2S() : null;
 
         if (msg != null) {
             msg.execute(server, obj, conn);

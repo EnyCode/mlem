@@ -4,11 +4,10 @@ import com.google.gson.JsonElement;
 
 import net.minecraft.server.MinecraftServer;
 
-public interface MessageS2C {
+public interface S2CPacket {
     JsonElement json();
 
     default void broadcast(MinecraftServer server) {
-        // TODO: this will probably explode on single player
-        ((MlemParent) (Object) server).mlem().broadcast(this.json().toString());
+        Util.mlem(server).broadcast(this.json().toString());
     }
 }

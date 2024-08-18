@@ -40,7 +40,7 @@ public class MlemServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        if (MessageC2S.execute(this, message, conn).isEmpty()) {
+        if (C2SPacket.execute(this, message, conn).isEmpty()) {
             Mlem.LOGGER.debug("error in JSON from client " + ipFor(conn) + ": " + message);
         }
     }

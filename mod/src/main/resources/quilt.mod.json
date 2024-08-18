@@ -1,40 +1,41 @@
 {
-	"schema_version": 1,
-	"quilt_loader": {
-		"group": "${group}",
-		"id": "mlem_server",
-		"version": "${version}",
-		"metadata": {
-			"name": "mlem server",
-			"description": "implementation of the mlem protocol.",
-			"contributors": {
-				"Eny": "owner"
-			},
-			"contact": {
-				"__homepage": "https://example.com/",
-				"__issues": "https://github.com/QuiltMC/quilt-template-mod/issues",
-				"__sources": "https://github.com/QuiltMC/quilt-template-mod"
-			},
-			"__icon": "assets/example_mod/icon.png"
-		},
-		"intermediate_mappings": "net.fabricmc:intermediary",
-		"entrypoints": {
-			"__init": "dev.enymc.mlem.ExampleMod"
-		},
-		"depends": [
-			{
-				"id": "quilt_loader",
-				"versions": ">=0.19.1"
-			},
-			{
-				"id": "quilted_fabric_api",
-				"versions": ">=11.0.0-"
-			},
-			{
-				"id": "minecraft",
-				"versions": ">=1.21"
-			}
-		]
-	},
-	"mixin": "mlem.mixins.json"
+    "schema_version": 1,
+    "quilt_loader": {
+        "group": "${group}",
+        "id": "mlem_server",
+        "version": "${version}",
+        "metadata": {
+            "name": "mlem server",
+            "description": "implementation of the mlem protocol.",
+            "contributors": {
+                "Eny": "owner"
+            },
+            "contact": {
+                "__homepage": "https://example.com/",
+                "__issues": "https://github.com/QuiltMC/quilt-template-mod/issues",
+                "__sources": "https://github.com/QuiltMC/quilt-template-mod"
+            },
+            "__icon": "assets/example_mod/icon.png"
+        },
+        "intermediate_mappings": "net.fabricmc:intermediary",
+        "entrypoints": {
+            "__init": "dev.enymc.mlem.ExampleMod"
+        },
+        "depends": [
+            {
+                "id": "quilt_loader",
+                "versions": ">=0.19.1"
+            },
+            {
+                "id": "quilted_fabric_api",
+                "versions": ">=11.0.0-"
+            },
+            {
+                "id": "minecraft",
+                "versions": ">=1.21"
+            }
+        ]
+    },
+    "mixin": "mlem.mixins.json",
+    "access_widener": "mlem.accesswidener"
 }

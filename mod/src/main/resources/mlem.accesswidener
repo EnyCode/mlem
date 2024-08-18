@@ -1,0 +1,4 @@
+accessWidener v2 named
+
+accessible method net/minecraft/text/Text$SerializationUtil fromJson (Lcom/google/gson/JsonElement;Lnet/minecraft/registry/HolderLookup$Provider;)Lnet/minecraft/text/MutableText;
+accessible method net/minecraft/text/Text$SerializationUtil toJsonElement (Lnet/minecraft/text/Text;Lnet/minecraft/registry/HolderLookup$Provider;)Lcom/google/gson/JsonElement;
