@@ -7,28 +7,31 @@ import org.java_websocket.handshake.ClientHandshake;
 import org.java_websocket.server.WebSocketServer;
 import org.jetbrains.annotations.Nullable;
 
-import net.minecraft.server.dedicated.DedicatedServer;
+import net.minecraft.server.dedicated.MinecraftDedicatedServer;
 
 public class MlemServer extends WebSocketServer {
-    private MlemServer(InetSocketAddress addr) {
+    public final MinecraftDedicatedServer server;
+
+    private MlemServer(InetSocketAddress addr, MinecraftDedicatedServer server) {
         super(addr);
+
+        this.server = server;
     }
 
-    public static MlemServer create(DedicatedServer server) {
+    public static MlemServer create(MinecraftDedicatedServer server) {
         String hostname = server.getHostname();
         if (hostname.isEmpty())
             hostname = "0.0.0.0";
 
         // TODO: don't hardcode port
-        MlemServer mlem = new MlemServer(new InetSocketAddress(hostname, 1701));
+        MlemServer mlem = new MlemServer(new InetSocketAddress(hostname, 1701), server);
         mlem.start();
         return mlem;
     }
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        Mlem.LOGGER
-                .info("Connection to mlem server from " + conn.getRemoteSocketAddress().getAddress().getHostAddress());
+        Mlem.LOGGER.info("Connection to mlem server from " + ipFor(conn));
     }
 
     @Override
@@ -37,7 +40,9 @@ public class MlemServer extends WebSocketServer {
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        Mlem.LOGGER.info("message from ws: " + message);
+        if (MessageC2S.execute(this, message, conn).isEmpty()) {
+            Mlem.LOGGER.debug("error in JSON from client " + ipFor(conn) + ": " + message);
+        }
     }
 
     @Override
@@ -45,12 +50,15 @@ public class MlemServer extends WebSocketServer {
         if (conn == null) {
             Mlem.LOGGER.error("Error with mlem server", ex);
         } else {
-            Mlem.LOGGER.error("Error with mlem client " + conn.getRemoteSocketAddress().getAddress().getHostAddress(),
-                    ex);
+            Mlem.LOGGER.error("Error with mlem client " + ipFor(conn), ex);
         }
     }
 
     @Override
     public void onStart() {
+    }
+
+    private static String ipFor(WebSocket conn) {
+        return conn.getRemoteSocketAddress().getAddress().getHostAddress().replaceFirst("(?:^|:)0(:0)+(?:$|:)", "::");
     }
 }
