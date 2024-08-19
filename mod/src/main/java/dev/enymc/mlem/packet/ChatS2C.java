@@ -48,7 +48,7 @@ public class ChatS2C implements S2CPacket {
 
     @Override
     public JsonElement json() {
-        var obj = new JsonObject();
+        JsonObject obj = new JsonObject();
         obj.addProperty("type", this.type.id);
         obj.addProperty("message", this.message.getContent());
         obj.add("text", Text.SerializationUtil.toJsonElement(this.message.getUnsignedContent(),

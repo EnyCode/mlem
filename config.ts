@@ -1,6 +1,9 @@
-import { Config, markdown } from './mlem';
+import { mcToMarkdown, type Config } from 'mlem';
 
 export const config: Config = {
+    discord: {
+        webhook: '',
+    },
     tunnels: [
         {
             from: 'discord',
@@ -15,7 +18,6 @@ export const config: Config = {
                             contents: { text: `@${author.username}` },
                         },
                     },
-
                     {
                         text: content,
                         extra: attachments
@@ -35,11 +37,11 @@ export const config: Config = {
         },
         {
             from: 'minecraft:chat',
-            to: 'discord',
+            to: 'discord:webhook',
             fn: ({ message, player }) => ({
-                content: markdown(message),
+                content: mcToMarkdown(message),
                 username: player.name,
-                avatar_url: `https://example.com/head/${player.uuid}.png`,
+                avatarURL: `https://visage.surgeplay.com/face/128/${player.uuid}?no=ears`,
             }),
         },
     ],

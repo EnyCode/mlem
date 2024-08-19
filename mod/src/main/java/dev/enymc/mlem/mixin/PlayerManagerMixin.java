@@ -10,6 +10,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+import net.minecraft.network.ClientConnection;
+import net.minecraft.network.ConnectedClientData;
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedChatMessage;
 import net.minecraft.server.MinecraftServer;
@@ -17,6 +19,7 @@ import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
 import dev.enymc.mlem.Util;
 import dev.enymc.mlem.packet.ChatS2C;
+import dev.enymc.mlem.packet.PlayerListUpdateS2C;
 
 @Mixin(PlayerManager.class)
 public class PlayerManagerMixin {
@@ -28,6 +31,17 @@ public class PlayerManagerMixin {
     private void sendChatMessage(SignedChatMessage message, Predicate<ServerPlayerEntity> shouldFilter,
             @Nullable ServerPlayerEntity sender, MessageType.Parameters parameters, CallbackInfo ci) {
         ChatS2C.create(Util.mlem(this.server), message, sender, parameters)
-                .ifPresent(packet -> packet.broadcast(server));
+                .ifPresent(packet -> packet.broadcast(this.server));
+    }
+
+    @Inject(method = "onPlayerConnect", at = @At("TAIL"))
+    private void onPlayerConnect(ClientConnection conn, ServerPlayerEntity player, ConnectedClientData connData,
+            CallbackInfo ci) {
+        PlayerListUpdateS2C.join(player).broadcast(this.server);
+    }
+
+    @Inject(method = "remove", at = @At("TAIL"))
+    private void remove(ServerPlayerEntity player, CallbackInfo ci) {
+        PlayerListUpdateS2C.leave(player).broadcast(this.server);
     }
 }

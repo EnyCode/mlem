@@ -1,3 +1,4 @@
+import type { WebhookMessageCreateOptions } from 'discord.js';
 import type { MinecraftText } from './minecraft';
 import type { ChatMessageS2C } from './mlem';
 
@@ -22,10 +23,8 @@ export type DiscordMessage = {
 // sink definitions
 
 export type TunnelSink = {
-    discord: DiscordWebhook;
+    'discord:webhook': DiscordWebhook;
     minecraft: MinecraftText;
 };
 
-export type DiscordWebhook = {
-    content: string;
-};
+export type DiscordWebhook = WebhookMessageCreateOptions;
