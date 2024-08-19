@@ -38,8 +38,8 @@ export const config: Config = {
         {
             from: 'minecraft:chat',
             to: 'discord:webhook',
-            fn: ({ message, player }) => ({
-                content: mcToMarkdown(message),
+            fn: ({ text, player }) => ({
+                content: mcToMarkdown(text),
                 username: player.name,
                 avatarURL: `https://visage.surgeplay.com/face/128/${player.uuid}?no=ears`,
             }),
