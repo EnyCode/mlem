@@ -9,14 +9,14 @@ import com.google.gson.JsonObject;
 
 import net.minecraft.network.message.MessageType;
 import net.minecraft.network.message.SignedChatMessage;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Text;
 import dev.enymc.mlem.MlemServer;
 import dev.enymc.mlem.S2CPacket;
 import dev.enymc.mlem.Util;
 
 public class ChatS2C implements S2CPacket {
-    private final MlemServer server;
+    private final MinecraftServer server;
 
     private final ChatType type;
     private final SignedChatMessage message;
@@ -24,7 +24,7 @@ public class ChatS2C implements S2CPacket {
     private final ServerPlayerEntity author;
 
     private ChatS2C(MlemServer server, SignedChatMessage message, @Nullable ServerPlayerEntity author, ChatType type) {
-        this.server = server;
+        this.server = server.server;
         this.type = type;
         this.message = message;
         this.author = author;
@@ -50,9 +50,7 @@ public class ChatS2C implements S2CPacket {
     public JsonElement json() {
         JsonObject obj = new JsonObject();
         obj.addProperty("type", this.type.id);
-        obj.addProperty("message", this.message.getContent());
-        obj.add("text", Text.SerializationUtil.toJsonElement(this.message.getUnsignedContent(),
-                this.server.server.getRegistryManager()));
+        obj.add("chat", Util.serializeText(this.message.getUnsignedContent(), this.server));
 
         if (this.author != null) {
             obj.add("player", Util.serializePlayer(this.author));

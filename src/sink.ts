@@ -5,7 +5,7 @@ import type { Config } from 'mlem';
 export const sinkDrains: {
     [K in keyof TunnelSink]: (value: TunnelSink[K], config: Config) => void;
 } = {
-    'discord:webhook': (value, config) => {
+    discordWebhook: (value, config) => {
         const maybeWebhook = config.discord?.webhook;
         if (maybeWebhook === undefined) return;
 

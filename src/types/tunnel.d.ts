@@ -1,11 +1,13 @@
 import type { WebhookMessageCreateOptions } from 'discord.js';
 import type { MinecraftText } from './minecraft';
-import type { ChatMessageS2C } from './mlem';
+import type { ChatMessageS2C, PlayerListUpdateS2C } from './mlem';
 
 // source definitions
 
 export type TunnelSource = {
-    'minecraft:chat': ChatMessageS2C;
+    minecraftChat: ChatMessageS2C;
+    minecraftJoin: PlayerListUpdateS2C;
+    minecraftLeave: PlayerListUpdateS2C;
     discord: DiscordMessage;
 };
 
@@ -23,7 +25,7 @@ export type DiscordMessage = {
 // sink definitions
 
 export type TunnelSink = {
-    'discord:webhook': DiscordWebhook;
+    discordWebhook: DiscordWebhook;
     minecraft: MinecraftText;
 };
 

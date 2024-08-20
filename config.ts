@@ -36,10 +36,28 @@ export const config: Config = {
             }),
         },
         {
-            from: 'minecraft:chat',
-            to: 'discord:webhook',
-            fn: ({ text, player }) => ({
-                content: mcToMarkdown(text),
+            from: 'minecraftChat',
+            to: 'discordWebhook',
+            fn: ({ chat: { components }, player }) => ({
+                content: mcToMarkdown(components),
+                username: player.name,
+                avatarURL: `https://visage.surgeplay.com/face/128/${player.uuid}?no=ears`,
+            }),
+        },
+        {
+            from: 'minecraftJoin',
+            to: 'discordWebhook',
+            fn: ({ player, message: { display } }) => ({
+                embeds: [{ description: display }],
+                username: player.name,
+                avatarURL: `https://visage.surgeplay.com/face/128/${player.uuid}?no=ears`,
+            }),
+        },
+        {
+            from: 'minecraftLeave',
+            to: 'discordWebhook',
+            fn: ({ player, message: { display } }) => ({
+                embeds: [{ description: display }],
                 username: player.name,
                 avatarURL: `https://visage.surgeplay.com/face/128/${player.uuid}?no=ears`,
             }),

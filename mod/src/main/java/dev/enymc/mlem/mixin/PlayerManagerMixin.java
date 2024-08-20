@@ -37,11 +37,11 @@ public class PlayerManagerMixin {
     @Inject(method = "onPlayerConnect", at = @At("TAIL"))
     private void onPlayerConnect(ClientConnection conn, ServerPlayerEntity player, ConnectedClientData connData,
             CallbackInfo ci) {
-        PlayerListUpdateS2C.join(player).broadcast(this.server);
+        PlayerListUpdateS2C.join(this.server, player).broadcast(this.server);
     }
 
     @Inject(method = "remove", at = @At("TAIL"))
     private void remove(ServerPlayerEntity player, CallbackInfo ci) {
-        PlayerListUpdateS2C.leave(player).broadcast(this.server);
+        PlayerListUpdateS2C.leave(this.server, player).broadcast(this.server);
     }
 }

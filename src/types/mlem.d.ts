@@ -14,17 +14,19 @@ export type PacketS2C = PlayerListUpdateS2C | ChatMessageS2C | ServerMessageS2C;
 /** a player has left or joined the server. */
 export type PlayerListUpdateS2C = {
     type: 'player_join' | 'player_leave';
+    /** indicates whether the player joined or left. */
+    joined: boolean;
     /** the player that joined or left. */
     player: MinecraftPlayer;
+    /** the message displayed in chat. */
+    message: MlemText;
 };
 
 /** a message sent by an online player. */
 export type ChatMessageS2C = {
     type: 'chat' | 'chat_say' | 'chat_me';
-    /** the raw message content as the user entered. */
-    message: string;
-    /** the message content after processing. */
-    text: MinecraftText;
+    /** the message's content. */
+    chat: MlemText;
     /** the player who sent this message. */
     player: MinecraftPlayer;
 };
@@ -43,4 +45,11 @@ export type MinecraftPlayer = {
     name: string;
     /** the player's uuid (hyphenated lowercase). */
     uuid: string;
+};
+
+export type MlemText = {
+    /** the components making up the text. */
+    components: MinecraftText;
+    /** the text as displayed in-game, without formatting. */
+    display: string;
 };

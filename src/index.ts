@@ -13,7 +13,13 @@ socket.onmessage = (socketMsg) => {
     const msg = JSON.parse(socketMsg.data.toString()) as PacketS2C;
 
     config.tunnels.forEach((tunnel) => {
-        if (tunnel.from === 'minecraft:chat' && msg.type === 'chat') {
+        if (tunnel.from === 'minecraftChat' && msg.type === 'chat') {
+            drain(tunnel.to, tunnel.fn(msg), config);
+        }
+        if (
+            (tunnel.from === 'minecraftJoin' && msg.type === 'player_join') ||
+            (tunnel.from === 'minecraftLeave' && msg.type === 'player_leave')
+        ) {
             drain(tunnel.to, tunnel.fn(msg), config);
         }
     });
