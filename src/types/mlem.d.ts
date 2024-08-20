@@ -9,7 +9,11 @@ export type BroadcastC2S = {
     message: MinecraftText;
 };
 
-export type PacketS2C = PlayerListUpdateS2C | ChatMessageS2C | ServerMessageS2C;
+export type PacketS2C =
+    | PlayerListUpdateS2C
+    | ChatMessageS2C
+    | ServerMessageS2C
+    | AdvancementS2C;
 
 /** a player has left or joined the server. */
 export type PlayerListUpdateS2C = {
@@ -34,10 +38,25 @@ export type ChatMessageS2C = {
 /** a message sent from the console using /say. */
 export type ServerMessageS2C = {
     type: 'server_message';
-    /** the raw message content as entered in the console. */
-    message: string;
-    /** the message content after processing. */
-    text: MinecraftText;
+    /** the message's content. */
+    chat: MlemText;
+};
+
+/** a player has achieved an advancement. */
+export type AdvancementS2C = {
+    type: 'advancement';
+    /** the player receiving the advancement. */
+    player: MinecraftPlayer;
+    /** the namespaced id of the advancement. */
+    advancement: string;
+    /** the type of the advancement. */
+    advancement_type: 'task' | 'challenge' | 'goal';
+    /** the message displayed in chat. */
+    message: MlemText;
+    /** the name of the advancement. */
+    title: MlemText;
+    /** the description of the advancement. */
+    description: MlemText;
 };
 
 export type MinecraftPlayer = {

@@ -23,8 +23,9 @@ public class ChatS2C implements S2CPacket {
     @Nullable
     private final ServerPlayerEntity author;
 
-    private ChatS2C(MlemServer server, SignedChatMessage message, @Nullable ServerPlayerEntity author, ChatType type) {
-        this.server = server.server;
+    private ChatS2C(MinecraftServer server, SignedChatMessage message, @Nullable ServerPlayerEntity author,
+            ChatType type) {
+        this.server = server;
         this.type = type;
         this.message = message;
         this.author = author;
@@ -43,20 +44,25 @@ public class ChatS2C implements S2CPacket {
         if (type == null)
             return Optional.empty();
 
-        return Optional.of(new ChatS2C(server, chatMessage, author, type));
+        return Optional.of(new ChatS2C(server.server, chatMessage, author, type));
     }
 
     @Override
     public JsonElement json() {
         JsonObject obj = new JsonObject();
         obj.addProperty("type", this.type.id);
-        obj.add("chat", Util.serializeText(this.message.getUnsignedContent(), this.server));
+        obj.add("chat", Util.serializeText(this.message.getUnsignedContent(), this.server()));
 
         if (this.author != null) {
             obj.add("player", Util.serializePlayer(this.author));
         }
 
         return obj;
+    }
+
+    @Override
+    public MinecraftServer server() {
+        return this.server;
     }
 
     public enum ChatType {

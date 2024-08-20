@@ -7,7 +7,9 @@ import net.minecraft.server.MinecraftServer;
 public interface S2CPacket {
     JsonElement json();
 
-    default void broadcast(MinecraftServer server) {
-        Util.mlem(server).broadcast(this.json().toString());
+    MinecraftServer server();
+
+    default void broadcast() {
+        Util.mlem(this.server()).broadcast(this.json().toString());
     }
 }
