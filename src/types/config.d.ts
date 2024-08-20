@@ -4,6 +4,8 @@ import type { TunnelSink, TunnelSource } from './tunnel';
 export type Config = {
     discord?: {
         webhook?: WebhookClientDataIdWithToken | string;
+        botToken?: string;
+        channel?: string;
     };
 
     tunnels: {

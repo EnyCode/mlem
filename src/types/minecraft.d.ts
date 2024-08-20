@@ -50,7 +50,7 @@ export type MinecraftTextComponent = (
             }
       ))
 ) & {
-    extra?: MinecraftText[];
+    extra?: (MinecraftTextComponent | string)[];
 
     // formatting
     color?: MinecraftColor;

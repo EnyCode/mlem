@@ -1,6 +1,7 @@
 import { WebhookClient } from 'discord.js';
 import type { TunnelSink } from './types/tunnel';
-import type { Config } from 'mlem';
+import { socket, type Config } from 'mlem';
+import type { BroadcastC2S } from './types/mlem';
 
 export const sinkDrains: {
     [K in keyof TunnelSink]: (value: TunnelSink[K], config: Config) => void;
@@ -16,8 +17,12 @@ export const sinkDrains: {
         );
         client.send(value);
     },
-    minecraft: (value, config) => {
-        //
+    minecraft: (value) => {
+        const packet: BroadcastC2S = {
+            type: 'broadcast',
+            message: value,
+        };
+        socket.send(JSON.stringify(packet));
     },
 };
 

@@ -25,7 +25,8 @@
         "noPropertyAccessFromIndexSignature": false,
 
         "paths": {
-            "mlem": ["./src/config.ts"]
+            "mlem": ["./src/index.ts"],
+            "mlem/*": ["./src/*"],
         }
     }
 }

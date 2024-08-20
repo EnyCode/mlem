@@ -1,8 +1,17 @@
 import { mcToMarkdown, type Config } from 'mlem';
+import type { MinecraftPlayer } from 'mlem/types/mlem';
+import { markdownToMC } from 'mlem/util';
+
+const webhookTemplate = (player: MinecraftPlayer) => ({
+    username: player.name,
+    avatarURL: `https://visage.surgeplay.com/face/128/${player.uuid}?no=ears`,
+});
 
 export const config: Config = {
     discord: {
         webhook: '',
+        botToken: '',
+        channel: '',
     },
     tunnels: [
         {
@@ -12,25 +21,27 @@ export const config: Config = {
                 translate: 'chat.type.text',
                 with: [
                     {
-                        text: author.name,
+                        text: author.displayName,
                         hoverEvent: {
                             action: 'show_text',
-                            contents: { text: `@${author.username}` },
+                            contents: {
+                                text: `@${author.username} on Discord`,
+                            },
                         },
                     },
                     {
-                        text: content,
-                        extra: attachments
-                            ? [
-                                  {
-                                      text: ' (media)',
-                                      clickEvent: {
-                                          action: 'open_url' as const,
-                                          value: attachments[0].url,
-                                      },
-                                  },
-                              ]
-                            : undefined,
+                        text: '',
+                        extra: [
+                            ...markdownToMC(content),
+                            ...attachments.map((attach) => ({
+                                text: ' (media)',
+                                color: 'aqua' as const,
+                                clickEvent: {
+                                    action: 'open_url' as const,
+                                    value: attach.url,
+                                },
+                            })),
+                        ],
                     },
                 ],
             }),
@@ -38,10 +49,9 @@ export const config: Config = {
         {
             from: 'minecraftChat',
             to: 'discordWebhook',
-            fn: ({ chat: { components }, player }) => ({
+            fn: ({ player, chat: { components } }) => ({
                 content: mcToMarkdown(components),
-                username: player.name,
-                avatarURL: `https://visage.surgeplay.com/face/128/${player.uuid}?no=ears`,
+                ...webhookTemplate(player),
             }),
         },
         {
@@ -49,8 +59,7 @@ export const config: Config = {
             to: 'discordWebhook',
             fn: ({ player, message: { display } }) => ({
                 embeds: [{ description: display }],
-                username: player.name,
-                avatarURL: `https://visage.surgeplay.com/face/128/${player.uuid}?no=ears`,
+                ...webhookTemplate(player),
             }),
         },
         {
@@ -58,8 +67,7 @@ export const config: Config = {
             to: 'discordWebhook',
             fn: ({ player, message: { display } }) => ({
                 embeds: [{ description: display }],
-                username: player.name,
-                avatarURL: `https://visage.surgeplay.com/face/128/${player.uuid}?no=ears`,
+                ...webhookTemplate(player),
             }),
         },
     ],
