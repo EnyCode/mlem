@@ -6,7 +6,8 @@
     "mixins": [
         "PlayerManagerMixin",
         "MinecraftDedicatedServerMixin",
-        "PlayerAdvancementTrackerMixin"
+        "PlayerAdvancementTrackerMixin",
+        "ServerPlayerEntityMixin"
     ],
     "client": [],
     "injectors": {

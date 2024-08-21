@@ -13,7 +13,8 @@ export type PacketS2C =
     | PlayerListUpdateS2C
     | ChatMessageS2C
     | ServerMessageS2C
-    | AdvancementS2C;
+    | AdvancementS2C
+    | PlayerDeathS2C;
 
 /** a player has left or joined the server. */
 export type PlayerListUpdateS2C = {
@@ -57,6 +58,15 @@ export type AdvancementS2C = {
     title: MlemText;
     /** the description of the advancement. */
     description: MlemText;
+};
+
+/** a player has died. */
+export type PlayerDeathS2C = {
+    type: 'player_death';
+    /** the player who died. */
+    player: MinecraftPlayer;
+    /** the death message. */
+    message: MlemText;
 };
 
 export type MinecraftPlayer = {

@@ -11,25 +11,47 @@ const config = (await import(configFile)).config as Config;
 
 // listening to the minecraft server
 
-export const socket = new WebSocket('ws://localhost:1701');
+export let serverSocket = openSocket();
 
-socket.onopen = () => console.log('connected to minecraft server!');
+function openSocket() {
+    const socket = new WebSocket('ws://localhost:1701');
 
-socket.onmessage = (socketMsg) => {
-    const msg = JSON.parse(socketMsg.data.toString()) as PacketS2C;
+    socket.onopen = () => console.log('connected to minecraft server!');
 
-    config.tunnels.forEach((tunnel) => {
-        if (tunnel.from === 'minecraftChat' && msg.type === 'chat') {
-            drain(tunnel.to, tunnel.fn(msg), config);
-        }
-        if (
-            (tunnel.from === 'minecraftJoin' && msg.type === 'player_join') ||
-            (tunnel.from === 'minecraftLeave' && msg.type === 'player_leave')
-        ) {
-            drain(tunnel.to, tunnel.fn(msg), config);
-        }
-    });
-};
+    socket.onclose = () => {
+        console.log(
+            'server connection closed; will try to reconnect in 3 seconds!',
+        );
+        setTimeout(() => {
+            serverSocket = openSocket();
+        }, 3_000);
+    };
+
+    socket.onmessage = (socketMsg) => {
+        const msg = JSON.parse(socketMsg.data.toString()) as PacketS2C;
+
+        config.tunnels.forEach((tunnel) => {
+            if (tunnel.from === 'minecraftChat' && msg.type === 'chat')
+                drain(tunnel.to, tunnel.fn(msg), config);
+            if (
+                (tunnel.from === 'minecraftJoin' &&
+                    msg.type === 'player_join') ||
+                (tunnel.from === 'minecraftLeave' &&
+                    msg.type === 'player_leave')
+            )
+                drain(tunnel.to, tunnel.fn(msg), config);
+            if (
+                tunnel.from === 'minecraftAdvancement' &&
+                msg.type === 'advancement'
+            )
+                drain(tunnel.to, tunnel.fn(msg), config);
+            if (tunnel.from === 'minecraftDeath' && msg.type === 'player_death')
+                drain(tunnel.to, tunnel.fn(msg), config);
+        });
+    };
+
+    return socket;
+}
 
 // listening to discord
 

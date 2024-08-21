@@ -58,7 +58,7 @@ export const config: Config = {
             from: 'minecraftJoin',
             to: 'discordWebhook',
             fn: ({ player, message: { display } }) => ({
-                embeds: [{ description: display }],
+                embeds: [{ title: display }],
                 ...webhookTemplate(player),
             }),
         },
@@ -66,7 +66,28 @@ export const config: Config = {
             from: 'minecraftLeave',
             to: 'discordWebhook',
             fn: ({ player, message: { display } }) => ({
-                embeds: [{ description: display }],
+                embeds: [{ title: display }],
+                ...webhookTemplate(player),
+            }),
+        },
+        {
+            from: 'minecraftAdvancement',
+            to: 'discordWebhook',
+            fn: ({ player, message, description }) => ({
+                embeds: [
+                    {
+                        title: message.display,
+                        description: description.display,
+                    },
+                ],
+                ...webhookTemplate(player),
+            }),
+        },
+        {
+            from: 'minecraftDeath',
+            to: 'discordWebhook',
+            fn: ({ player, message: { display } }) => ({
+                embeds: [{ title: display }],
                 ...webhookTemplate(player),
             }),
         },
