@@ -13,8 +13,10 @@ export type PacketS2C =
     | PlayerListUpdateS2C
     | ChatMessageS2C
     | ServerMessageS2C
+    | CommandFeedbackS2C
     | AdvancementS2C
-    | PlayerDeathS2C;
+    | PlayerDeathS2C
+    | VillagerDeathS2C;
 
 /** a player has left or joined the server. */
 export type PlayerListUpdateS2C = {
@@ -43,6 +45,17 @@ export type ServerMessageS2C = {
     chat: MlemText;
 };
 
+/** feedback from running a command. */
+export type CommandFeedbackS2C = {
+    type: 'command_feedback';
+    /** the feedback shown to the command source. */
+    feedback: MlemText;
+    /** the feedback shown to other OPs and the console. */
+    shared_feedback: MlemText;
+    /** the command's sender. may be missing if no player sent the command. */
+    sender?: MinecraftPlayer;
+};
+
 /** a player has achieved an advancement. */
 export type AdvancementS2C = {
     type: 'advancement';
@@ -67,6 +80,43 @@ export type PlayerDeathS2C = {
     player: MinecraftPlayer;
     /** the death message. */
     message: MlemText;
+};
+
+/** a villager has died. */
+export type VillagerDeathS2C = {
+    type: 'villager_death';
+    /** the death message. */
+    message: MlemText;
+    /** information about the villager. */
+    villager: {
+        /** which biome the villager is from. */
+        type:
+            | 'plains'
+            | 'desert'
+            | 'savanna'
+            | 'snow'
+            | 'taiga'
+            | 'jungle'
+            | 'swamp';
+        /** the villager's profession. can be 'none'. */
+        profession?:
+            | 'armorer'
+            | 'butcher'
+            | 'cartographer'
+            | 'cleric'
+            | 'farmer'
+            | 'fisherman'
+            | 'fletcher'
+            | 'leatherworker'
+            | 'librarian'
+            | 'mason'
+            | 'nitwit'
+            | 'shepherd'
+            | 'toolsmith'
+            | 'weaponsmith';
+        /** the villager's level, between 1 and 5. */
+        level: number;
+    };
 };
 
 export type MinecraftPlayer = {

@@ -1,5 +1,4 @@
 export type { Config } from './types/config';
-export { mcToMarkdown } from './util';
 
 import type { Config } from './types/config';
 import type { PacketS2C } from './types/mlem';
@@ -31,26 +30,47 @@ function openSocket() {
         const msg = JSON.parse(socketMsg.data.toString()) as PacketS2C;
 
         config.tunnels.forEach((tunnel) => {
-            if (tunnel.from === 'minecraftChat' && msg.type === 'chat')
-                drain(tunnel.to, tunnel.fn(msg), config);
-            if (
-                (tunnel.from === 'minecraftJoin' &&
-                    msg.type === 'player_join') ||
-                (tunnel.from === 'minecraftLeave' &&
-                    msg.type === 'player_leave')
-            )
-                drain(tunnel.to, tunnel.fn(msg), config);
-            if (
-                tunnel.from === 'minecraftAdvancement' &&
-                msg.type === 'advancement'
-            )
-                drain(tunnel.to, tunnel.fn(msg), config);
-            if (tunnel.from === 'minecraftDeath' && msg.type === 'player_death')
-                drain(tunnel.to, tunnel.fn(msg), config);
+            try {
+                executeTunnel(tunnel, msg);
+            } catch (err) {
+                console.error(
+                    `error executing tunnel ${tunnel.from} -> ${tunnel.to}`,
+                );
+                console.error(err);
+            }
         });
     };
 
     return socket;
+}
+
+function executeTunnel(tunnel: Config['tunnels'][number], msg: PacketS2C) {
+    if (tunnel.from === 'minecraftChat' && msg.type === 'chat')
+        drain(tunnel.to, tunnel.fn(msg), config);
+    if (
+        tunnel.from === 'minecraftServerMessage' &&
+        msg.type === 'server_message'
+    )
+        drain(tunnel.to, tunnel.fn(msg), config);
+    if (
+        tunnel.from === 'minecraftCommandFeedback' &&
+        msg.type === 'command_feedback'
+    )
+        drain(tunnel.to, tunnel.fn(msg), config);
+    if (
+        (tunnel.from === 'minecraftJoin' && msg.type === 'player_join') ||
+        (tunnel.from === 'minecraftLeave' && msg.type === 'player_leave')
+    )
+        drain(tunnel.to, tunnel.fn(msg), config);
+    if (tunnel.from === 'minecraftAdvancement' && msg.type === 'advancement')
+        drain(tunnel.to, tunnel.fn(msg), config);
+    if (tunnel.from === 'minecraftDeath' && msg.type === 'player_death')
+        drain(tunnel.to, tunnel.fn(msg), config);
+    if (
+        tunnel.from === 'minecraftVillagerDeath' &&
+        msg.type === 'villager_death'
+    )
+        drain(tunnel.to, tunnel.fn(msg), config);
 }
 
 // listening to discord

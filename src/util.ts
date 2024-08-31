@@ -261,3 +261,10 @@ export function markdownToMC(
 
     return JSON.parse(parsed) as (MinecraftTextComponent | string)[];
 }
+
+export function titleCase(str: string) {
+    return str
+        .split(' ')
+        .map((word) => word.substring(0, 1).toUpperCase() + word.substring(1))
+        .join(' ');
+}
